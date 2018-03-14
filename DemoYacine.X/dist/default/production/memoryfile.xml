@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/production/DemoYacine.X.production.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>16384</length>
+      <used>302</used>
+      <free>16082</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>134016</length>
+      <used>13599</used>
+      <free>120417</free>
+    </memory>
+  </executable>
+</project>
