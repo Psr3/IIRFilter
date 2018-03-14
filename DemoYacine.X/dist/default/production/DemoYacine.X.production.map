@@ -219,10 +219,10 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200              0x20a2          0x30f3  (12531)
 .const                      0x22a2                0x9a            0xe7  (231)
-.text                       0x233c               0x3a6           0x579  (1401)
-.dinit                      0x26e2               0x116           0x1a1  (417)
+.text                       0x233c               0x484           0x6c6  (1734)
+.dinit                      0x27c0               0x114           0x19e  (414)
 
-                 Total program memory used (bytes):         0x38f4  (14580) 10%
+                 Total program memory used (bytes):         0x3a3e  (14910) 11%
 
 
 Ivt Memory  [Origin = 0x4, Length = 0x1fc]
@@ -235,16 +235,16 @@ Data Memory  [Origin = 0x1000, Length = 0x4000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.ndata                      0x1000                   0             0x4  (4)
-.nbss                       0x1004                   0             0x2  (2)
-.data                       0x1006                   0           0x11c  (284)
-.bss                        0x1122                   0             0x4  (4)
-.data                       0x1126                   0             0x4  (4)
-.bss                        0x112a                   0             0x2  (2)
-.data                       0x112c                   0             0x2  (2)
-.bss                        0x112e                   0             0x2  (2)
+.ndata                      0x1000                   0             0x2  (2)
+.nbss                       0x1002                   0             0x2  (2)
+.data                       0x1004                   0           0x11c  (284)
+.bss                        0x1120                   0             0x4  (4)
+.data                       0x1124                   0             0x4  (4)
+.bss                        0x1128                   0             0x2  (2)
+.data                       0x112a                   0             0x2  (2)
+.bss                        0x112c                   0             0x2  (2)
 
-                 Total data memory used (bytes):          0x130  (304) 1%
+                 Total data memory used (bytes):          0x12e  (302) 1%
 
 
 Dynamic Memory Usage
@@ -252,36 +252,34 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x1130                              0x3ed0  (16080)
+stack                       0x112e                              0x3ed2  (16082)
 
-                 Maximum dynamic memory (bytes):         0x3ed0  (16080)
+                 Maximum dynamic memory (bytes):         0x3ed2  (16082)
 
 
 External Symbols in Data Memory (by address):
 
-                    0x1000                  _N
-                    0x1002                  _sizeSignal
-                    0x1006                  __Stdin
-                    0x102e                  __Stdout
-                    0x1056                  __Stderr
-                    0x107e                  __Files
-                    0x1122                  __Aldata
-                    0x1126                  __Size_block
-                    0x112c                  ___C30_UART
-                    0x112e                  ___curbrk
+                    0x1000                  _sizeSignal
+                    0x1004                  __Stdin
+                    0x102c                  __Stdout
+                    0x1054                  __Stderr
+                    0x107c                  __Files
+                    0x1120                  __Aldata
+                    0x1124                  __Size_block
+                    0x112a                  ___C30_UART
+                    0x112c                  ___curbrk
 
 External Symbols in Data Memory (by name):
 
-                    0x1000                  _N
-                    0x1122                  __Aldata
-                    0x107e                  __Files
-                    0x1126                  __Size_block
-                    0x1056                  __Stderr
-                    0x1006                  __Stdin
-                    0x102e                  __Stdout
-                    0x112c                  ___C30_UART
-                    0x112e                  ___curbrk
-                    0x1002                  _sizeSignal
+                    0x1120                  __Aldata
+                    0x107c                  __Files
+                    0x1124                  __Size_block
+                    0x1054                  __Stderr
+                    0x1004                  __Stdin
+                    0x102c                  __Stdout
+                    0x112a                  ___C30_UART
+                    0x112c                  ___curbrk
+                    0x1000                  _sizeSignal
 
 External Symbols in Program Memory (by address):
 
@@ -383,10 +381,10 @@ External Symbols in Program Memory (by address):
                   0x00222c                  ___floatdidf
                   0x00224c                  ___floatundidf
                   0x00233c                  _RunIIRPolyForm2
-                  0x0024d8                  _addToFilteredSignal
-                  0x002520                  _filter900
-                  0x002636                  _run
-                  0x0026d8                  _main
+                  0x0024f2                  _addToFilteredSignal
+                  0x00253a                  _filter900
+                  0x0026b4                  _run
+                  0x0027b6                  _main
 
 External Symbols in Program Memory (by name):
 
@@ -470,22 +468,22 @@ External Symbols in Program Memory (by name):
                   0x000200                  __resetPRI
                   0x000682                  __sincosf
                   0x000328                  __start_slave
-                  0x0024d8                  _addToFilteredSignal
+                  0x0024f2                  _addToFilteredSignal
                   0x001294                  _div
                   0x0019ae                  _fclose
-                  0x002520                  _filter900
+                  0x00253a                  _filter900
                   0x00079a                  _fmodf
                   0x0009ba                  _fputc
                   0x001320                  _fputs
                   0x000872                  _free
                   0x0013b0                  _fwrite
                   0x001458                  _ldiv
-                  0x0026d8                  _main
+                  0x0027b6                  _main
                   0x00093c                  _malloc
                   0x001482                  _memchr
                   0x001496                  _memcpy
                   0x000990                  _puts
-                  0x002636                  _run
+                  0x0026b4                  _run
                   0x0005d6                  _sinf
                   0x0014a4                  _strchr
                   0x0014bc                  _strlen
@@ -927,22 +925,22 @@ __FS1ALTREG
  *(.comment)
  .comment         0x000000         0x5e /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xfiles.CH_eo)
 
-.debug_info       0x000000        0x4a4
+.debug_info       0x000000        0x527
  *(.debug_info)
- .debug_info      0x000000        0x4a4 build/default/production/main.o
+ .debug_info      0x000000        0x527 build/default/production/main.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000         0xfb
+.debug_abbrev     0x000000         0xea
  *(.debug_abbrev)
- .debug_abbrev    0x000000         0xfb build/default/production/main.o
+ .debug_abbrev    0x000000         0xea build/default/production/main.o
 
-.debug_line       0x000000         0x9d
+.debug_line       0x000000         0xb0
  *(.debug_line)
- .debug_line      0x000000         0x9d build/default/production/main.o
+ .debug_line      0x000000         0xb0 build/default/production/main.o
 
-.debug_frame      0x000000        0x11a
+.debug_frame      0x000000        0x12a
  *(.debug_frame)
- .debug_frame     0x000000        0x11a build/default/production/main.o
+ .debug_frame     0x000000        0x12a build/default/production/main.o
 
 .debug_str        0x000000         0x10
  *(.debug_str)
@@ -955,10 +953,10 @@ __FS1ALTREG
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x72
+                  0x000000         0x6c
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x72 build/default/production/main.o
+                  0x000000         0x6c build/default/production/main.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -3514,55 +3512,54 @@ __c30_signature
  __c30_signature
                   0x0001f2          0x6 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/libm-elf.a(floatundidf.cheo)
 
-.ndata              0x1000          0x4
- .ndata             0x1000          0x4 build/default/production/main.o
-                    0x1000                  _N
-                    0x1002                  _sizeSignal
+.ndata              0x1000          0x2
+ .ndata             0x1000          0x2 build/default/production/main.o
+                    0x1000                  _sizeSignal
 
-.nbss               0x1004          0x2
- .nbss              0x1004          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/libm-elf.a(errno.cheo)
-                    0x1004                  _errno
+.nbss               0x1002          0x2
+ .nbss              0x1002          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/libm-elf.a(errno.cheo)
+                    0x1002                  _errno
 
-.data               0x1006        0x11c
- .data              0x1006         0x88 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xfiles.CH_eo)
-                    0x1006                  __Stdin
-                    0x102e                  __Stdout
-                    0x1056                  __Stderr
-                    0x107e                  __Files
- .data              0x108e         0x58 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xldtob_cdfFnopuxX.CHeo)
- .data              0x10e6         0x22 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xlitob.CH_eo)
- .data              0x1108         0x1a /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xprintf_cdfFnopuxX.CHeo)
+.data               0x1004        0x11c
+ .data              0x1004         0x88 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xfiles.CH_eo)
+                    0x1004                  __Stdin
+                    0x102c                  __Stdout
+                    0x1054                  __Stderr
+                    0x107c                  __Files
+ .data              0x108c         0x58 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xldtob_cdfFnopuxX.CHeo)
+ .data              0x10e4         0x22 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xlitob.CH_eo)
+ .data              0x1106         0x1a /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xprintf_cdfFnopuxX.CHeo)
 
-.bss                0x1122          0x4
- .bss               0x1122          0x4 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(malloc.CH_eo)
-                    0x1122                  __Aldata
+.bss                0x1120          0x4
+ .bss               0x1120          0x4 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(malloc.CH_eo)
+                    0x1120                  __Aldata
 
-.data               0x1126          0x4
- .data              0x1126          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(malloc.CH_eo)
-                    0x1126                  __Size_block
- .data              0x1128          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xgenld_cdfFnopuxX.CHeo)
+.data               0x1124          0x4
+ .data              0x1124          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(malloc.CH_eo)
+                    0x1124                  __Size_block
+ .data              0x1126          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(xgenld_cdfFnopuxX.CHeo)
 
-.bss                0x112a          0x2
- .bss               0x112a          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(fclose.CH_elo)
+.bss                0x1128          0x2
+ .bss               0x1128          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-c-elf.a(fclose.CH_elo)
 
-.data               0x112c          0x2
- .data              0x112c          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-pic30-elf.a(c30_uartch.Leo)
-                    0x112c                  ___C30_UART
+.data               0x112a          0x2
+ .data              0x112a          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-pic30-elf.a(c30_uartch.Leo)
+                    0x112a                  ___C30_UART
 
-.bss                0x112e          0x2
- .bss               0x112e          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-pic30-elf.a(brkch.Lelo)
-                    0x112e                  ___curbrk
+.bss                0x112c          0x2
+ .bss               0x112c          0x2 /Applications/microchip/xc16/v1.33/bin/bin/../../lib/liblega-pic30-elf.a(brkch.Lelo)
+                    0x112c                  ___curbrk
 
 .const              0xa2a2         0x9a load address 0x0022a2  
  .const             0xa2a2         0x9a build/default/production/main.o
 
-.text             0x00233c        0x3a6
- .text            0x00233c        0x3a6 build/default/production/main.o
+.text             0x00233c        0x484
+ .text            0x00233c        0x484 build/default/production/main.o
                   0x00233c                  _RunIIRPolyForm2
-                  0x0024d8                  _addToFilteredSignal
-                  0x002520                  _filter900
-                  0x002636                  _run
-                  0x0026d8                  _main
+                  0x0024f2                  _addToFilteredSignal
+                  0x00253a                  _filter900
+                  0x0026b4                  _run
+                  0x0027b6                  _main
 
-.dinit            0x0026e2        0x116
- .dinit           0x0026e2        0x116 data_init
+.dinit            0x0027c0        0x114
+ .dinit           0x0027c0        0x114 data_init

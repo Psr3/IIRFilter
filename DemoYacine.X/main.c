@@ -3,9 +3,9 @@
 #include <math.h>
 #define REG_SIZE 3
 #define PI 3.14
+#define STAGES 4
 
 
-int N=3;
 int sizeSignal = 100;
 // On crée un pointeur sur int
 
@@ -34,41 +34,37 @@ int sizeSignal = 100;
 
 /*Filter deuxieme ordre IIR*/
 
-float RunIIRPolyForm2(float Signal, float NumCoeff[3], float DenCoeff[3], float gain, int N){
+float RunIIRPolyForm2(float Signal, int stage, float NumCoeff[3], float DenCoeff[3], float gain, float **RegX, float **RegY){
     float output;
-    int j, k;
-    float RegX[REG_SIZE];
-    float RegY[REG_SIZE];
+    int k;
+    int N=3;
     float SumPos;
     float SumNeg;
     float y;
-    
-    for(j=0; j <REG_SIZE; j++)RegX[j] = RegY[j]= 0;  // Init the delay registers.
-    
     int shift = 0;
     while(shift < N){
         {
             // Shift the register values.
-            for(k=N-1; k>0; k--)RegX[k] = RegX[k-1];
-            for(k=N-1; k>0; k--)RegY[k] = RegY[k-1];
+            for(k=N-1; k>0; k--)RegX[stage-1][k] = RegX[stage-1][k-1];
+            for(k=N-1; k>0; k--)RegY[stage-1][k] = RegY[stage-1][k-1];
             
             // The numerator
             SumPos= SumNeg = 0.0;
-            RegX[0] = Signal;
+            RegX[stage-1][0] = Signal;
             for(k=0; k<N; k++)
             {
-                SumPos += NumCoeff[k] * RegX[k];
+                SumPos += NumCoeff[k] * RegX[stage-1][k];
                 printf("SumPos %f\n", SumPos);
             }
             
             // The denominator
             for(k=0; k<N; k++)
             {
-                SumNeg -= DenCoeff[k] * RegY[k];
+                SumNeg -= DenCoeff[k] * RegY[stage-1][k];
                 printf("SumNeg %f\n", SumNeg);
             }
-            RegY[0]=SumPos + SumNeg;
-            y = RegY[0];
+            RegY[stage-1][0]=SumPos + SumNeg;
+            y = RegY[stage-1][0];
             printf("y %f\n", y);
             shift++;
         }
@@ -101,23 +97,25 @@ void addToFilteredSignal(float *FilteredSignal, float input,int SizeSignal){
 }
 
 /*Section1 IIR filter 900*/
-float  filter900(float Signal,  int N){
+float  filter900(float Signal,float **RegX, float **RegY){
     float NumCoeff[] = {1, 0,-1};
-    float DenCoeff1[] = {1,-1.664414318134467052345826232340186834335,  0.986290434543632965613824126194231212139};
-    float DenCoeff2[] = {1,-1.689825793226944483649276662617921829224,  0.986785118376035330634010733774630352855};
-    float DenCoeff3[] = {1,-1.666131600275946089695366936211939901114,  0.97325187491204023793045507773058488965 };
-    float Gain1=0.013463182178534767452493525752288405783 ;
-    float Gain2=0.013463182178534767452493525752288405783 ;
-    float Gain3=0.013374062543979908790348076763621065766 ;
+    float DenCoeff1[] = {1,-1.849232881995307886668911123706493526697,   0.994308932656938981864414017763920128345};
+    float DenCoeff2[] = {1,-1.859357338914342516744682143325917422771,   0.994499858380903267729422623233404010534};
+    float DenCoeff3[] = {1,-1.844916615723619868205673810734879225492,   0.986448999510018187386606314248638227582};
+    float DenCoeff4[] = {1,-1.849196871265132324779756345378700643778,   0.986638483540468680388357824995182454586};
+    float Gain1=0.007311183296068102070719429974587910692 ;
+    float Gain2=0.007311183296068102070719429974587910692 ;
+    float Gain3=0.007282505737740874347807551458799935062 ;
+    float Gain4=0.007282505737740874347807551458799935062  ;
     printf("Coeff %f\n", DenCoeff1[1]);
     printf("Signal %f\n", Signal);
-    float OutputFirstStage = RunIIRPolyForm2(Signal,  NumCoeff, DenCoeff1, Gain1,  N);
+    float OutputFirstStage = RunIIRPolyForm2(Signal,1,  NumCoeff, DenCoeff1, Gain1, RegX, RegY);
     printf("OutputFirstStage %f\n", OutputFirstStage);
-    float OutputSecondStage=RunIIRPolyForm2( OutputFirstStage,  NumCoeff, DenCoeff2, Gain2,  N);
+    float OutputSecondStage=RunIIRPolyForm2( OutputFirstStage,2,  NumCoeff, DenCoeff2, Gain2, RegX, RegY);
     printf("OutputSecondStage %f\n", OutputSecondStage);
-    float OutputThirdStage=RunIIRPolyForm2( OutputSecondStage, NumCoeff, DenCoeff3,Gain3, N);
-    printf("FinalOutput %f\n", FinalOutput);
-    float FinalOutput=RunIIRPolyForm2( OutputThirdStage, NumCoeff, DenCoeff3,Gain3, N);
+    float OutputThirdStage=RunIIRPolyForm2( OutputSecondStage,3, NumCoeff, DenCoeff3,Gain3, RegX, RegY);
+    printf("FinalOutput %f\n", OutputThirdStage);
+    float FinalOutput=RunIIRPolyForm2( OutputThirdStage,4, NumCoeff, DenCoeff4,Gain4, RegX, RegY);
     return FinalOutput;
 }
 /* Section2 IIR filter 1100*/
@@ -146,8 +144,17 @@ float  filter900(float Signal,  int N){
  */
 void run(){
     int Temps=0;
+    int j;
     int Periode=100;
+    int stage;
     float * FilteredSignal900 = (float * ) malloc( Periode*sizeof(float));
+    float ** RegX900 = (float ** ) malloc( STAGES*REG_SIZE*sizeof(float));
+    float ** RegY900 = (float ** ) malloc( STAGES*REG_SIZE*sizeof(float));
+    for (stage=0;stage<STAGES;stage++){
+        for(j=0; j <REG_SIZE; j++){
+            RegX900[stage][j] = RegY900[stage][j]= 0;
+        }
+    }  // Init the delay registers.
     float Signal;
     float Frequence=900;
     while(Temps<Periode){
@@ -160,7 +167,7 @@ void run(){
             }
         }
         Signal= 4*sin(2*PI*Frequence*Temps);
-        float valueToAdd=filter900(Signal,N);
+        float valueToAdd=filter900(Signal, RegX900, RegY900);
         printf("apres filtre actif\n");
         addToFilteredSignal(FilteredSignal900,valueToAdd,100);
         /*if(Temps==99){
@@ -170,6 +177,8 @@ void run(){
         Temps++;
     }
     free(FilteredSignal900);
+    free(RegX900);
+    free(RegY900);
     
     
 }
