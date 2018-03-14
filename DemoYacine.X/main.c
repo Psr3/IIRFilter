@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
 #define REG_SIZE 3
+#define PI 3.14
 
 
 int N=3;
@@ -114,8 +115,9 @@ float  filter900(float Signal,  int N){
     printf("OutputFirstStage %f\n", OutputFirstStage);
     float OutputSecondStage=RunIIRPolyForm2( OutputFirstStage,  NumCoeff, DenCoeff2, Gain2,  N);
     printf("OutputSecondStage %f\n", OutputSecondStage);
-    float FinalOutput=RunIIRPolyForm2( OutputSecondStage, NumCoeff, DenCoeff3,Gain3, N);
+    float OutputThirdStage=RunIIRPolyForm2( OutputSecondStage, NumCoeff, DenCoeff3,Gain3, N);
     printf("FinalOutput %f\n", FinalOutput);
+    float FinalOutput=RunIIRPolyForm2( OutputThirdStage, NumCoeff, DenCoeff3,Gain3, N);
     return FinalOutput;
 }
 /* Section2 IIR filter 1100*/
@@ -146,6 +148,8 @@ void run(){
     int Temps=0;
     int Periode=100;
     float * FilteredSignal900 = (float * ) malloc( Periode*sizeof(float));
+    float Signal;
+    float Frequence=900;
     while(Temps<Periode){
         printf("At time %d\n", Temps);
         if(Temps==0){
@@ -155,8 +159,8 @@ void run(){
                 
             }
         }
-        printf("avant filtre actif\n");
-        float valueToAdd=filter900(900,N);
+        Signal= 4*sin(2*PI*Frequence*Temps);
+        float valueToAdd=filter900(Signal,N);
         printf("apres filtre actif\n");
         addToFilteredSignal(FilteredSignal900,valueToAdd,100);
         /*if(Temps==99){
