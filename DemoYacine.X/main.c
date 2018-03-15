@@ -7,16 +7,16 @@
 
 
 int sizeSignal = 100;
-// On crée un pointeur sur int
+// On crï¿½e un pointeur sur int
 
-// La fonction malloc inscrit dans notre pointeur l'adresse qui a été reservée.
+// La fonction malloc inscrit dans notre pointeur l'adresse qui a ï¿½tï¿½ reservï¿½e.
 /*double FilteredSignal1100[];*/
 
 
 /*int random_number(int min_num, int max_num)
  {
  int result = 0, low_num = 0, hi_num = 0;
- 
+
  if (min_num < max_num)
  {
  low_num = min_num;
@@ -25,7 +25,7 @@ int sizeSignal = 100;
  low_num = max_num + 1; // include max_num in output
  hi_num = min_num;
  }
- 
+
  srand(time(NULL));
  result = (rand() % (hi_num - low_num)) + low_num;
  return result;
@@ -43,11 +43,10 @@ float RunIIRPolyForm2(float Signal, int stage, float NumCoeff[3], float DenCoeff
     float y;
     int shift = 0;
     while(shift < N){
-        {
             // Shift the register values.
             for(k=N-1; k>0; k--)RegX[stage-1][k] = RegX[stage-1][k-1];
             for(k=N-1; k>0; k--)RegY[stage-1][k] = RegY[stage-1][k-1];
-            
+
             // The numerator
             SumPos= SumNeg = 0.0;
             RegX[stage-1][0] = Signal;
@@ -56,7 +55,7 @@ float RunIIRPolyForm2(float Signal, int stage, float NumCoeff[3], float DenCoeff
                 SumPos += NumCoeff[k] * RegX[stage-1][k];
                 printf("SumPos %f\n", SumPos);
             }
-            
+
             // The denominator
             for(k=0; k<N; k++)
             {
@@ -67,14 +66,12 @@ float RunIIRPolyForm2(float Signal, int stage, float NumCoeff[3], float DenCoeff
             y = RegY[stage-1][0];
             printf("y %f\n", y);
             shift++;
-        }
-        
     }
-    
+
     output=y*gain;
     printf("output %f\n", output);
     return output;
-    
+
 }
 
 /*float maxValue(float *FilteredSignal,int SizeSignal){
@@ -142,19 +139,29 @@ float  filter900(float Signal,float **RegX, float **RegY){
  free(FilteredSignal900);
  }
  */
+
 void run(){
     int Temps=0;
-    int j;
+    int j, i;
     int Periode=100;
     int stage;
     float * FilteredSignal900 = (float * ) malloc( Periode*sizeof(float));
-    float ** RegX900 = (float ** ) malloc( STAGES*REG_SIZE*sizeof(float));
-    float ** RegY900 = (float ** ) malloc( STAGES*REG_SIZE*sizeof(float));
+    float ** RegX900 = (float **)malloc(STAGES * sizeof(float*));;
+    for(i = 0; i < STAGES; i++) RegX900[i] = (float *)malloc(REG_SIZE * sizeof(float));
+    float ** RegY900 = (float **)malloc(STAGES * sizeof(float*));;
+    for(i = 0; i < STAGES; i++) RegY900[i] = (float *)malloc(REG_SIZE * sizeof(float));
+
     for (stage=0;stage<STAGES;stage++){
         for(j=0; j <REG_SIZE; j++){
-            RegX900[stage][j] = RegY900[stage][j]= 0;
+            RegX900[stage][j]  = RegY900[stage][j] = 0.0;
         }
     }  // Init the delay registers.
+    for (stage=0;stage<STAGES;stage++){
+        for(j=0; j <REG_SIZE; j++){
+            printf("%f\n", RegX900[stage][j]);
+        }
+    }  // Init the delay registers.
+
     float Signal;
     float Frequence=900;
     while(Temps<Periode){
@@ -163,7 +170,7 @@ void run(){
             int i;
             for(i=0;i<Periode;i++){
                 FilteredSignal900[i]=0;
-                
+
             }
         }
         Signal= 4*sin(2*PI*Frequence*Temps);
@@ -172,15 +179,15 @@ void run(){
         addToFilteredSignal(FilteredSignal900,valueToAdd,100);
         /*if(Temps==99){
          Temps=-1;
-         
-         }*/
+
+     }*/
         Temps++;
     }
     free(FilteredSignal900);
     free(RegX900);
     free(RegY900);
-    
-    
+
+
 }
 
 
@@ -188,4 +195,3 @@ int main() {
     run();
     return 0;
 }
-
