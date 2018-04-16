@@ -39,25 +39,25 @@ void IIRFilter(float Signal, float NumCoeff[3], float DenCoeff[4][3], float gain
     Reg[1]=Reg[0];
     Reg[0]=Signal;
     
-    /*1er etage*/
+    /*First stage*/
     Reg[REG_SIZE+2]= Reg[REG_SIZE+1];
     Reg[REG_SIZE+1]= Reg[REG_SIZE+0];
     Reg[REG_SIZE+0]= NumCoeff[0]*Reg[0] + NumCoeff[1]*Reg[1] + NumCoeff[2]*Reg[2] - DenCoeff[0][1]*Reg[REG_SIZE+1] - DenCoeff[0][2]*Reg[REG_SIZE+2];
     
-    /*2e etage*/
-    Reg[2*REG_SIZE+2]=Reg[2*REG_SIZE+1];
-    Reg[2*REG_SIZE+1]=Reg[2*REG_SIZE+0];
-    Reg[2*REG_SIZE+0]=NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2] - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2];
+    /*Second stage*/
+    Reg[2*REG_SIZE+2]= Reg[2*REG_SIZE+1];
+    Reg[2*REG_SIZE+1]= Reg[2*REG_SIZE+0];
+    Reg[2*REG_SIZE+0]= (NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2])*gain[0] - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2];
     
-    /*3e etage*/
-    Reg[3*REG_SIZE+2]=Reg[3*REG_SIZE+1];
-    Reg[3*REG_SIZE+1]=Reg[3*REG_SIZE+0];
-    Reg[3*REG_SIZE+0]=NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2] - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2];
+    /*Third stage*/
+    Reg[3*REG_SIZE+2]= Reg[3*REG_SIZE+1];
+    Reg[3*REG_SIZE+1]= Reg[3*REG_SIZE+0];
+    Reg[3*REG_SIZE+0]= (NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2])*gain[1] - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2];
     
-    /*4e etage*/
-    Reg[4*REG_SIZE+2]=Reg[4*REG_SIZE+1];
-    Reg[4*REG_SIZE+1]=Reg[4*REG_SIZE+0];
-    Reg[4*REG_SIZE+0]=NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2] - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2];
+    /*Fourth stage*/
+    Reg[4*REG_SIZE+2]= Reg[4*REG_SIZE+1];
+    Reg[4*REG_SIZE+1]= Reg[4*REG_SIZE+0];
+    Reg[4*REG_SIZE+0]= (NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2])*gain[2] - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2];
     
 }
 
@@ -85,8 +85,8 @@ float  filter900(float Signal,float *Reg900){
     float DenCoeff[4][3] = {{1,-1.849232881995307886668911123706493526697,   0.994308932656938981864414017763920128345},{1,-1.859357338914342516744682143325917422771,   0.994499858380903267729422623233404010534},{1,-1.844916615723619868205673810734879225492,   0.986448999510018187386606314248638227582},{1,-1.849196871265132324779756345378700643778,   0.986638483540468680388357824995182454586}};
     float Gain[4]={0.007311183296068102070719429974587910692, 0.007311183296068102070719429974587910692, 0.007282505737740874347807551458799935062, 0.007282505737740874347807551458799935062} ;
     IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg900 );
-    float y=Reg900[4*REG_SIZE+0];
-    printf("%f",y);
+    float y=(Reg900[4*REG_SIZE+0])*Gain[3];
+    /*printf("Valeur de y: %f\n",y);*/
     return y;
 }
 /* Section2 IIR filter 1100*/
@@ -115,15 +115,21 @@ float  filter900(float Signal,float *Reg900){
  */
 
 void run(){
-    int Temps;
+    double Temps;
     int Periode=100;
-    for(Temp=0; Temps<1000;Temps++){
-    int Signal=4*sin();
-    }
+    int frequence=950;
+    float pas=0.000066667;
+    /*printf("Valeur du pas: %f\n",pas);*/
     float * FilteredSignal900 = (float * ) malloc( Periode*sizeof(float));
     float * Reg900 = (float *)malloc((STAGES+1)*REG_SIZE* sizeof(float*));
-    float input900= filter900(Signal, Reg900);
-    addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);
+    while(Temps<100){
+        float Signal=4*sin(2*PI*frequence*Temps);
+        printf("Valeur du Signal: %f\n",Signal);
+        float input900= filter900(Signal, Reg900);
+        printf("Valeur du Signal filtré: %f\n",input900);
+        addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);
+        Temps= Temps+pas;
+    }
     free(FilteredSignal900);
     free(Reg900);
 
