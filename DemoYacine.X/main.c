@@ -82,7 +82,7 @@ void addToFilteredSignal(long *FilteredSignal, long input,int SizeSignal){
 /*Section1 IIR filter 900*/
 long  filter900(long Signal,long *Reg900){
     long NumCoeff[3] = {100000, 0,-100000};
-    long DenCoeff[4][3] = {{1,-184923,   99430},{1,-185935,  99449},{1,-184491,   98644},{1,-184919,   98663}};
+    long DenCoeff[4][3] = {{100000,-184923,   99430},{100000,-185935,  99449},{100000,-184491,   98644},{100000,-184919,   98663}};
     long Gain[4]={731, 731, 728, 728} ;
     IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg900 );
     long y=(Reg900[4*REG_SIZE+0])*Gain[3];
@@ -117,14 +117,14 @@ long  filter900(long Signal,long *Reg900){
 void run(){
     double Temps;
     int Periode=100;
-    int frequence=950;
+    int frequence=900;
     float pas=0.000066667;
     /*printf("Valeur du pas: %f\n",pas);*/
     long * FilteredSignal900 = (long * ) malloc( Periode*sizeof(long));
     long * Reg900 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long*));
     while(Temps<100){
-        double Signal=4*sin(2*PI*frequence*Temps);
-        printf("Valeur du Signal: %f\n",Signal);
+        long Signal=(4*sin(2*PI*frequence*Temps))*100000;
+        printf("Valeur du Signal: %ld\n",Signal);
         long input900= filter900(Signal, Reg900);
         printf("Valeur du Signal filtré: %ld\n",input900);
         addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);
