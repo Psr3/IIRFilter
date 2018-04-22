@@ -33,7 +33,7 @@
 
 /*Filter deuxieme ordre IIR*/
 
-void IIRFilter(float Signal, float NumCoeff[3], float DenCoeff[4][3], float gain[4], float *Reg){
+void IIRFilter(long Signal, long NumCoeff[3], long DenCoeff[4][3], long gain[4], long *Reg){
     /*Shift register + add signal to input Signals*/
     Reg[2]=Reg[1];
     Reg[1]=Reg[0];
@@ -73,19 +73,19 @@ void IIRFilter(float Signal, float NumCoeff[3], float DenCoeff[4][3], float gain
  }
  */
 
-void addToFilteredSignal(float *FilteredSignal, float input,int SizeSignal){
+void addToFilteredSignal(long *FilteredSignal, long input,int SizeSignal){
     int k;
     for(k=SizeSignal-1; k>0; k--)FilteredSignal[k] = FilteredSignal[k-1];
     FilteredSignal[0]=input;
 }
 
 /*Section1 IIR filter 900*/
-float  filter900(float Signal,float *Reg900){
-    float NumCoeff[3] = {1, 0,-1};
-    float DenCoeff[4][3] = {{1,-1.849232881995307886668911123706493526697,   0.994308932656938981864414017763920128345},{1,-1.859357338914342516744682143325917422771,   0.994499858380903267729422623233404010534},{1,-1.844916615723619868205673810734879225492,   0.986448999510018187386606314248638227582},{1,-1.849196871265132324779756345378700643778,   0.986638483540468680388357824995182454586}};
-    float Gain[4]={0.007311183296068102070719429974587910692, 0.007311183296068102070719429974587910692, 0.007282505737740874347807551458799935062, 0.007282505737740874347807551458799935062} ;
+long  filter900(long Signal,long *Reg900){
+    long NumCoeff[3] = {100000, 0,-100000};
+    long DenCoeff[4][3] = {{1,-184923,   99430},{1,-185935,  99449},{1,-184491,   98644},{1,-184919,   98663}};
+    long Gain[4]={731, 731, 728, 728} ;
     IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg900 );
-    float y=(Reg900[4*REG_SIZE+0])*Gain[3];
+    long y=(Reg900[4*REG_SIZE+0])*Gain[3];
     /*printf("Valeur de y: %f\n",y);*/
     return y;
 }
@@ -120,13 +120,13 @@ void run(){
     int frequence=950;
     float pas=0.000066667;
     /*printf("Valeur du pas: %f\n",pas);*/
-    float * FilteredSignal900 = (float * ) malloc( Periode*sizeof(float));
-    float * Reg900 = (float *)malloc((STAGES+1)*REG_SIZE* sizeof(float*));
+    long * FilteredSignal900 = (long * ) malloc( Periode*sizeof(long));
+    long * Reg900 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long*));
     while(Temps<100){
-        float Signal=4*sin(2*PI*frequence*Temps);
+        double Signal=4*sin(2*PI*frequence*Temps);
         printf("Valeur du Signal: %f\n",Signal);
-        float input900= filter900(Signal, Reg900);
-        printf("Valeur du Signal filtré: %f\n",input900);
+        long input900= filter900(Signal, Reg900);
+        printf("Valeur du Signal filtré: %ld\n",input900);
         addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);
         Temps= Temps+pas;
     }
