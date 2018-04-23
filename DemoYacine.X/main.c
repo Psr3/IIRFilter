@@ -46,19 +46,19 @@ void IIRFilter(long Signal, long NumCoeff[3], long DenCoeff[4][3], long gain[4],
     /*Second stage*/
     Reg[2*REG_SIZE+2]= Reg[2*REG_SIZE+1];
     Reg[2*REG_SIZE+1]= Reg[2*REG_SIZE+0];
-    Reg[2*REG_SIZE+0]= (((NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2])*gain[0])/100000 - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2]) ;
+    Reg[2*REG_SIZE+0]= (((NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2])*gain[0])/100000 - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2])/100000 ;
     printf("Valeur REG2: %ld\n",Reg[2*REG_SIZE+0]);
     
     /*Third stage*/
     Reg[3*REG_SIZE+2]= Reg[3*REG_SIZE+1];
     Reg[3*REG_SIZE+1]= Reg[3*REG_SIZE+0];
-    Reg[3*REG_SIZE+0]= (((NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2])*gain[1])/100000 - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2]) ;
+    Reg[3*REG_SIZE+0]= (((NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2])*gain[1])/100000 - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2])/100000 ;
     printf("Valeur REG3: %ld\n",Reg[3*REG_SIZE+0]);
     
     /*Fourth stage*/
     Reg[4*REG_SIZE+2]= Reg[4*REG_SIZE+1];
     Reg[4*REG_SIZE+1]= Reg[4*REG_SIZE+0];
-    Reg[4*REG_SIZE+0]= (((NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2])*gain[2])/100000 - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2]) ;
+    Reg[4*REG_SIZE+0]= (((NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2])*gain[2])/100000 - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2])/100000 ;
     printf("Valeur REG4: %ld\n",Reg[4*REG_SIZE+0]);
     /*
      int i;
@@ -91,26 +91,26 @@ void addToFilteredSignal(long *FilteredSignal, long input,int SizeSignal){
 long  filter900(long Signal,long *Reg900){
     long NumCoeff[3] = {100000, 0,-100000};
     long DenCoeff[4][3] = {{100000,-184923,   99430},{100000,-185935,  99449},{100000,-184491,   98644},{100000,-184919,   98663}};
-    //Gain[4]={731, 731, 728, 728} ;
-    long Gain[4]={1, 1, 1, 1};
+    long Gain[4]={731, 731, 728, 728} ;
+    //long Gain[4]={1, 1, 1, 1};
     IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg900 );
     long y=((Reg900[4*REG_SIZE+0])*Gain[3])/100000;
     /*printf("Valeur de y: %f\n",y);*/
     return y;
 }
 /* Section2 IIR filter 1100*/
+long  filter1100(long Signal,long *Reg1100){
+    long NumCoeff[3] = {100000, 0,-100000};
+    long DenCoeff[4][3] = {{100000,-177777,  99304},{100000,-179266,  99327 },{100000,-177360 ,   98345},{100000,-177985,   98368}};
+    long Gain[4]={893, 893, 889, 889} ;
+    //long Gain[4]={1, 1, 1, 1};
+    IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg1100 );
+    long y=((Reg1100[4*REG_SIZE+0])*Gain[3])/100000;
+    /*printf("Valeur de y: %f\n",y);*/
+    return y;
+}
 
-/*double *filter1100(double *Signal){
- double *FilteredSignal1100;
- double NumCoeff[] = {1, 0, -1};
- double DenCoeff1[] = {1, -1.509752573387514118508079263847321271896,  0.983275449259605083263124924997100606561};
- double DenCoeff2[] = {1,-1.546502728726402153824892593547701835632,  0.983841521223039250365616226190468296409};
- double DenCoeff3[] = {1,-1.515972573399827938445127983868587762117,  0.967378393534816805043874410330317914486};
- RunIIRPolyForm2( Signal, FilteredSignal1100, NumCoeff, DenCoeff1);
- RunIIRPolyForm2( FilteredSignal1100, FilteredSignal1100, NumCoeff, DenCoeff2);
- RunIIRPolyForm2( FilteredSignal1100, FilteredSignal1100, NumCoeff, DenCoeff3);
- return FilteredSignal1100;
- }*/
+
 
 
 /*void comparing(float Signal,int SizeSignal){
@@ -126,21 +126,25 @@ long  filter900(long Signal,long *Reg900){
 void run(){
     double Temps;
     int Periode=100;
-    int frequence=900;
+    int frequence=1100;
     float pas=0.000066667;
     // float pas = 1;
     /*printf("Valeur du pas: %f\n",pas);*/
     long * FilteredSignal900 = (long * ) malloc( Periode*sizeof(long));
     long * Reg900 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long));
+    long * Reg1100 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long));
     for(int i=0;i<15;i++){
         Reg900[i]=0;
+        Reg1100[i]=0;
     }
     while(Temps<10){
         long Signal=(4*sin(2*PI*frequence*Temps))*100000;
         printf("Valeur du Signal: %ld\n",Signal);
-        long input900= filter900(Signal, Reg900);
-        printf("Valeur du Signal filtré: %ld\n",input900);
-        addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);
+        /*long input900= filter900(Signal, Reg900);
+        printf("Valeur du Signal filtré: %ld\n",input900);*/
+        long input1100= filter1100(Signal, Reg1100);
+        printf("Valeur du Signal filtré: %ld\n",input1100);
+        /*addToFilteredSignal(FilteredSignal900, input900, SIZESIGNAL);*/
         Temps= Temps+pas;
     }
     free(FilteredSignal900);
