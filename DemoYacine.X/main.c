@@ -15,7 +15,6 @@
 /*int random_number(int min_num, int max_num)
  {
  int result = 0, low_num = 0, hi_num = 0;
-
  if (min_num < max_num)
  {
  low_num = min_num;
@@ -24,7 +23,6 @@
  low_num = max_num + 1; // include max_num in output
  hi_num = min_num;
  }
-
  srand(time(NULL));
  result = (rand() % (hi_num - low_num)) + low_num;
  return result;
@@ -38,33 +36,37 @@ void IIRFilter(long Signal, long NumCoeff[3], long DenCoeff[4][3], long gain[4],
     Reg[2]=Reg[1];
     Reg[1]=Reg[0];
     Reg[0]=Signal;
-
+    
     /*First stage*/
     Reg[REG_SIZE+2]= Reg[REG_SIZE+1];
     Reg[REG_SIZE+1]= Reg[REG_SIZE+0];
-    Reg[REG_SIZE+0]= (NumCoeff[0]*Reg[0] + NumCoeff[1]*Reg[1] + NumCoeff[2]*Reg[2] - DenCoeff[0][1]*Reg[REG_SIZE+1] - DenCoeff[0][2]*Reg[REG_SIZE+2]) / 100000;
-
+    Reg[REG_SIZE+0]= ((NumCoeff[0]*Reg[0] + NumCoeff[1]*Reg[1] + NumCoeff[2]*Reg[2] - DenCoeff[0][1]*Reg[REG_SIZE+1] - DenCoeff[0][2]*Reg[REG_SIZE+2]))/100000 ;
+    printf("Valeur REG1: %ld\n",Reg[REG_SIZE+0]);
+    
     /*Second stage*/
     Reg[2*REG_SIZE+2]= Reg[2*REG_SIZE+1];
     Reg[2*REG_SIZE+1]= Reg[2*REG_SIZE+0];
-    Reg[2*REG_SIZE+0]= ((NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2])*gain[0] - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2]) / 100000;
-
+    Reg[2*REG_SIZE+0]= (((NumCoeff[0]*Reg[REG_SIZE+0] + NumCoeff[1]*Reg[REG_SIZE+1] + NumCoeff[2]*Reg[REG_SIZE+2])*gain[0])/100000 - DenCoeff[1][1]*Reg[2*REG_SIZE+1] - DenCoeff[1][2]*Reg[2*REG_SIZE+2]) ;
+    printf("Valeur REG2: %ld\n",Reg[2*REG_SIZE+0]);
+    
     /*Third stage*/
     Reg[3*REG_SIZE+2]= Reg[3*REG_SIZE+1];
     Reg[3*REG_SIZE+1]= Reg[3*REG_SIZE+0];
-    Reg[3*REG_SIZE+0]= ((NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2])*gain[1] - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2]) /  100000;
-
+    Reg[3*REG_SIZE+0]= (((NumCoeff[0]*Reg[2*REG_SIZE+0] + NumCoeff[1]*Reg[2*REG_SIZE+1] + NumCoeff[2]*Reg[2*REG_SIZE+2])*gain[1])/100000 - DenCoeff[2][1]*Reg[3*REG_SIZE+1] - DenCoeff[2][2]*Reg[3*REG_SIZE+2]) ;
+    printf("Valeur REG3: %ld\n",Reg[3*REG_SIZE+0]);
+    
     /*Fourth stage*/
     Reg[4*REG_SIZE+2]= Reg[4*REG_SIZE+1];
     Reg[4*REG_SIZE+1]= Reg[4*REG_SIZE+0];
-    Reg[4*REG_SIZE+0]= ((NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2])*gain[2] - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2]) / 100000;
+    Reg[4*REG_SIZE+0]= (((NumCoeff[0]*Reg[3*REG_SIZE+0] + NumCoeff[1]*Reg[3*REG_SIZE+1] + NumCoeff[2]*Reg[3*REG_SIZE+2])*gain[2])/100000 - DenCoeff[3][1]*Reg[4*REG_SIZE+1] - DenCoeff[3][2]*Reg[4*REG_SIZE+2]) ;
+    printf("Valeur REG4: %ld\n",Reg[4*REG_SIZE+0]);
     /*
-    int i;
-    for (i = 0; i < 15; i++){
-        printf("(long) Reg-%d = %ld \n", i, Reg[i]);
-    }
-    */
-
+     int i;
+     for (i = 0; i < 15; i++){
+     printf("(long) Reg-%d = %ld \n", i, Reg[i]);
+     }
+     */
+    
 }
 
 /*float maxValue(float *FilteredSignal,int SizeSignal){
@@ -89,10 +91,10 @@ void addToFilteredSignal(long *FilteredSignal, long input,int SizeSignal){
 long  filter900(long Signal,long *Reg900){
     long NumCoeff[3] = {100000, 0,-100000};
     long DenCoeff[4][3] = {{100000,-184923,   99430},{100000,-185935,  99449},{100000,-184491,   98644},{100000,-184919,   98663}};
-    // long Gain[4]={731, 731, 728, 728} ;
+    //Gain[4]={731, 731, 728, 728} ;
     long Gain[4]={1, 1, 1, 1};
     IIRFilter(Signal, NumCoeff, DenCoeff, Gain,  Reg900 );
-    long y=(Reg900[4*REG_SIZE+0])*Gain[3];
+    long y=((Reg900[4*REG_SIZE+0])*Gain[3])/100000;
     /*printf("Valeur de y: %f\n",y);*/
     return y;
 }
@@ -124,13 +126,16 @@ long  filter900(long Signal,long *Reg900){
 void run(){
     double Temps;
     int Periode=100;
-    int frequence=950;
+    int frequence=900;
     float pas=0.000066667;
     // float pas = 1;
     /*printf("Valeur du pas: %f\n",pas);*/
     long * FilteredSignal900 = (long * ) malloc( Periode*sizeof(long));
-    long * Reg900 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long*));
-    while(Temps<100){
+    long * Reg900 = (long *)malloc((STAGES+1)*REG_SIZE* sizeof(long));
+    for(int i=0;i<15;i++){
+        Reg900[i]=0;
+    }
+    while(Temps<10){
         long Signal=(4*sin(2*PI*frequence*Temps))*100000;
         printf("Valeur du Signal: %ld\n",Signal);
         long input900= filter900(Signal, Reg900);
@@ -140,8 +145,8 @@ void run(){
     }
     free(FilteredSignal900);
     free(Reg900);
-
-
+    
+    
 }
 
 
