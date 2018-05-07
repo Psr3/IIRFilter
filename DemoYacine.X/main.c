@@ -13,12 +13,8 @@
 
 /* DEFINITIONS DES LISTES ET VARIABLES */
 
-volatile int detLOWlist[NBSAMPLES];
-volatile int detHIGHlist[NBSAMPLES];
-volatile int detLOW = 0;
-volatile int detHIGH = 0;
-volatile int count = 1;
-volatile int indx = 0;
+
+
 
 /*IIR Filter second order */
 void IIRFilter(long Signal, long NumCoeff[3], long DenCoeff[4][3], long gain[4], long Reg[(STAGES+1)*REG_SIZE]){
@@ -116,35 +112,27 @@ void filtering(long Signal,long FilteredSignal900[SIZESIGNAL],long FilteredSigna
     /*printf("Valeur du filter1100: %ld\n",input1100);*/
     addToFilteredSignal(FilteredSignal900, input900); //Add the 900Hz filtered value to the filtered Signal list
     addToFilteredSignal(FilteredSignal1100, input1100); //Add the 1100Hz filtered value to the filtered Signal list
-    if (count == 15){
-        
-        indx++;
-        count = count+1;
-    }else{
-        count ++;
-    }
 }
 
-void comparing(long FilteredSignal900[SIZESIGNAL],long FilteredSignal1100[SIZESIGNAL],int indx){
+void comparing(long FilteredSignal900[SIZESIGNAL],long FilteredSignal1100[SIZESIGNAL]){
     long maxValue900=maxValue(FilteredSignal900); //Maximum value of the Filtered Signal 900 on one Periode
     long maxValue1100=maxValue(FilteredSignal1100); //Maximum value of the Filtered Signal 1100 on one Periode
+    int detLOW;
+    int detHIGH;
     if(THRESHOLDVALUE<maxValue900){ //compare the MaxValue900 with the THRESHOLDVALUE
-        detLOWlist[indx] = 1;
-        printf("detLow: %d\n",detLOWlist[indx]);
+        detLOW = 1;
     }
     if(THRESHOLDVALUE>=maxValue900){
-        detLOWlist[indx] = 0;
-        printf("detLow: %d\n",detLOWlist[indx]);
+        detLOW = 0;
     }
     
     if(THRESHOLDVALUE<maxValue1100){ //compare the MaxValue1100 with the THRESHOLDVALUE
-        detHIGHlist[indx] = 1;
-        printf("detHigh: %d\n",detHIGHlist[indx]);
+        detHIGH = 1;
     }
     if(THRESHOLDVALUE>=maxValue1100){
-        detHIGHlist[indx] = 0;
-        printf("detHigh: %d\n",detHIGHlist[indx]);
+        detHIGH = 0;
     }
+    //fskDetector(detLOW, detHIGH);
 }
 
 
@@ -158,15 +146,11 @@ void runFilter(){
     float pas=0.000066667;
     int i;
     int j;
-    int k;
     int count=0;
-    int indx=0;
     long FilteredSignal900[SIZESIGNAL];
     long FilteredSignal1100[SIZESIGNAL];
     long Reg900[(STAGES+1)*REG_SIZE];
     long Reg1100[(STAGES+1)*REG_SIZE];
-    int detLOWlist[NBSAMPLES];
-    int detHIGHlist[NBSAMPLES];
     
     for(i=0;i<15;i++){
         Reg900[i]=0;
@@ -176,26 +160,19 @@ void runFilter(){
         FilteredSignal900[j]=0;   //Define all list's values at 0
         FilteredSignal1100[j]=0;  //Define all list's values at 0
     }
-    for(k=0;k<NBSAMPLES;k++){
-        detLOWlist[k]=0;   //Define all list's values at 0
-        detHIGHlist[k]=0;  //Define all list's values at 0
-    }
     while(Temps<10){
         float Signal=4*sin(2*PI*frequence*Temps)*100000;
         /*printf("Valeur du Signal: %f\n",Signal);*/
         filtering(Signal,FilteredSignal900,FilteredSignal1100,Reg900,Reg1100);
         if(count%15==0){
-            comparing(FilteredSignal900,FilteredSignal1100,indx);
-            indx=indx+1;
-            printf("Valeur de l'indice: %i\n",indx);
+            comparing(FilteredSignal900,FilteredSignal1100);
         }
         count=count+1;
         Temps=Temps+pas;
+        
     }
     
 }
-
-
 int main() {
     runFilter();
     return 0;
